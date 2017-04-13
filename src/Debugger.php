@@ -30,7 +30,7 @@ class Debugger
                     'root' => request()->root(),
                     'path' => request()->path(),
                     'query' => request()->query(),
-                    'headers' => request()->server->getHeaders(),
+                    'headers' => request()->headers(),
                     'content' => request()->getContent(),
                     'request' => request()->all(),
                 ],
