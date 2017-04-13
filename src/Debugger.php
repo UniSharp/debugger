@@ -14,15 +14,35 @@ class Debugger
         $this->client = $client;
     }
 
-    public function error($label, $message)
+    public function debug($label, $message)
     {
-        return $this->request('post', 'error', $label, $message);
+        return $this->request('debug', $label, $message);
     }
 
-    protected function request($method, $path, $label, $message)
+    public function info($label, $message)
+    {
+        return $this->request('info', $label, $message);
+    }
+
+    public function notice($label, $message)
+    {
+        return $this->request('notice', $label, $message);
+    }
+
+    public function warning($label, $message)
+    {
+        return $this->request('warning', $label, $message);
+    }
+
+    public function error($label, $message)
+    {
+        return $this->request('error', $label, $message);
+    }
+
+    protected function request($method, $level, $label, $message)
     {
         try {
-            return $this->client->request($method, $path, ['json' => [
+            return $this->client->post($level, ['json' => [
                 'label' => $label,
                 'message' => (string) $message,
                 'request' => [
