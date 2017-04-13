@@ -39,7 +39,7 @@ class Debugger
         return $this->request('error', $label, $message);
     }
 
-    protected function request($method, $level, $label, $message)
+    protected function request($level, $label, $message)
     {
         try {
             return $this->client->post($level, ['json' => [
