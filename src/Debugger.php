@@ -26,13 +26,13 @@ class Debugger
                 'label' => $label,
                 'message' => (string) $message,
                 'request' => [
-                    'method' => request()->method(),
-                    'root' => request()->root(),
-                    'path' => request()->path(),
-                    'query' => request()->query(),
-                    'headers' => request()->headers(),
-                    'content' => request()->getContent(),
-                    'request' => request()->all(),
+                    'method' => app('request')->method(),
+                    'root' => app('request')->root(),
+                    'path' => app('request')->path(),
+                    'query' => app('request')->query(),
+                    'headers' => app('request')->headers(),
+                    'content' => app('request')->getContent(),
+                    'request' => app('request')->all(),
                 ],
             ]]);
         } catch (Exception $e) {
