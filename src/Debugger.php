@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 class Debugger
 {
     protected $client;
+    protected $requests = [];
 
     public function __construct(ClientInterface $client)
     {
@@ -39,10 +40,20 @@ class Debugger
         return $this->request('error', $label, $message);
     }
 
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    public function getRequests()
+    {
+        return $this->requests;
+    }
+
     protected function request($level, $label, $message)
     {
-        try {
-            return $this->client->post($level, ['json' => [
+        $this->requests[] =  function () use ($level, $label, $message) {
+            return $this->client->postAsync($level, ['json' => [
                 'label' => $label,
                 'message' => (string) $message,
                 'request' => [
@@ -55,9 +66,8 @@ class Debugger
                     'request' => app('request')->all(),
                 ],
             ]]);
-        } catch (Exception $e) {
-            echo nl2br(str_replace(' ', '&nbsp;', e((string) $e)));
-            die;
-        }
+        };
+
+        return $this;
     }
 }
