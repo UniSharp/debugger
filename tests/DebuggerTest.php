@@ -6,7 +6,6 @@ use Mockery as m;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\ClientInterface;
 use UniSharp\Debugger\Debugger;
-use GuzzleHttp\Promise\PromiseInterface;
 
 class DebuggerTest extends TestCase
 {
@@ -34,7 +33,7 @@ class DebuggerTest extends TestCase
         $debugger = new Debugger($this->getClient());
 
         $this->assertInstanceOf(Debugger::class, $debugger->debug('foo', 'bar'));
-        $this->assertInstanceOf(PromiseInterface::class, $debugger->getRequests()[0]());
+        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     public function testInfo()
@@ -42,7 +41,7 @@ class DebuggerTest extends TestCase
         $debugger = new Debugger($this->getClient());
 
         $this->assertInstanceOf(Debugger::class, $debugger->info('foo', 'bar'));
-        $this->assertInstanceOf(PromiseInterface::class, $debugger->getRequests()[0]());
+        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     public function testNotice()
@@ -50,7 +49,7 @@ class DebuggerTest extends TestCase
         $debugger = new Debugger($this->getClient());
 
         $this->assertInstanceOf(Debugger::class, $debugger->notice('foo', 'bar'));
-        $this->assertInstanceOf(PromiseInterface::class, $debugger->getRequests()[0]());
+        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     public function testWarning()
@@ -58,7 +57,7 @@ class DebuggerTest extends TestCase
         $debugger = new Debugger($this->getClient());
 
         $this->assertInstanceOf(Debugger::class, $debugger->warning('foo', 'bar'));
-        $this->assertInstanceOf(PromiseInterface::class, $debugger->getRequests()[0]());
+        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     public function testError()
@@ -66,14 +65,14 @@ class DebuggerTest extends TestCase
         $debugger = new Debugger($this->getClient());
 
         $this->assertInstanceOf(Debugger::class, $debugger->error('foo', 'bar'));
-        $this->assertInstanceOf(PromiseInterface::class, $debugger->getRequests()[0]());
+        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     protected function getClient()
     {
         $client = m::mock(ClientInterface::class);
 
-        $client->shouldReceive('postAsync')->andReturn(m::mock(PromiseInterface::class));
+        $client->shouldReceive('post')->andReturn(m::mock(Response::class));
 
         return $client;
     }

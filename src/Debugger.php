@@ -52,8 +52,8 @@ class Debugger
 
     protected function request($level, $label, $message)
     {
-        $this->requests[] =  function () use ($level, $label, $message) {
-            return $this->client->postAsync($level, ['json' => [
+        $this->requests[] = function () use ($level, $label, $message) {
+            return $this->client->post($level, ['json' => [
                 'label' => $label,
                 'message' => (string) $message,
                 'request' => [
