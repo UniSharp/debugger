@@ -9,9 +9,9 @@ class DebuggerMiddleware
 {
     public function terminate($request, $response)
     {
-        array_walk(app('unisharp.debugger')->getRequests(), function ($callback) {
-            $callback();
-        });
+        foreach (app('unisharp.debugger')->getRequests() as $request) {
+            $request();
+        }
     }
 
     public function handle($request, Closure $next)
