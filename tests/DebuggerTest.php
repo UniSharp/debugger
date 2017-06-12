@@ -6,6 +6,7 @@ use Mockery as m;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\ClientInterface;
 use UniSharp\Debugger\Debugger;
+use Illuminate\Support\Facades\Log;
 
 class DebuggerTest extends TestCase
 {
@@ -14,66 +15,47 @@ class DebuggerTest extends TestCase
         m::close();
     }
 
-    public function testGetClient()
-    {
-        $debugger = new Debugger($client = m::mock(ClientInterface::class));
-
-        $this->assertEquals($client, $debugger->getClient());
-    }
-
-    public function testGetRequests()
-    {
-        $debugger = new Debugger($client = m::mock(ClientInterface::class));
-
-        $this->assertEquals([], $debugger->getRequests());
-    }
-
     public function testDebug()
     {
-        $debugger = new Debugger($this->getClient());
+        Log::shouldReceive('debug')
+            ->once()
+            ->andReturn(true);
+
+        $debugger = new Debugger();
 
         $this->assertInstanceOf(Debugger::class, $debugger->debug('foo', 'bar'));
-        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     public function testInfo()
     {
-        $debugger = new Debugger($this->getClient());
+        Log::shouldReceive('info')
+            ->once()
+            ->andReturn(true);
+
+        $debugger = new Debugger();
 
         $this->assertInstanceOf(Debugger::class, $debugger->info('foo', 'bar'));
-        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
-    }
-
-    public function testNotice()
-    {
-        $debugger = new Debugger($this->getClient());
-
-        $this->assertInstanceOf(Debugger::class, $debugger->notice('foo', 'bar'));
-        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
     }
 
     public function testWarning()
     {
-        $debugger = new Debugger($this->getClient());
+        Log::shouldReceive('warning')
+            ->once()
+            ->andReturn(true);
 
-        $this->assertInstanceOf(Debugger::class, $debugger->warning('foo', 'bar'));
-        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
+        $debugger = new Debugger();
+
+        $this->assertInstanceOf(Debugger::class, $debugger->info('foo', 'bar'));
     }
 
     public function testError()
     {
-        $debugger = new Debugger($this->getClient());
+        Log::shouldReceive('error')
+            ->once()
+            ->andReturn(true);
 
-        $this->assertInstanceOf(Debugger::class, $debugger->error('foo', 'bar'));
-        $this->assertInstanceOf(Response::class, $debugger->getRequests()[0]());
-    }
+        $debugger = new Debugger();
 
-    protected function getClient()
-    {
-        $client = m::mock(ClientInterface::class);
-
-        $client->shouldReceive('post')->andReturn(m::mock(Response::class));
-
-        return $client;
+        $this->assertInstanceOf(Debugger::class, $debugger->info('foo', 'bar'));
     }
 }

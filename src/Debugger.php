@@ -2,19 +2,10 @@
 
 namespace UniSharp\Debugger;
 
-use Exception;
-use GuzzleHttp\ClientInterface;
+use Illuminate\Support\Facades\Log;
 
 class Debugger
 {
-    protected $client;
-    protected $requests = [];
-
-    public function __construct(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
-
     public function debug($label, $message)
     {
         return $this->request('debug', $label, $message);
@@ -40,33 +31,26 @@ class Debugger
         return $this->request('error', $label, $message);
     }
 
-    public function getClient()
+    protected function getDebug($label, $message)
     {
-        return $this->client;
-    }
-
-    public function getRequests()
-    {
-        return $this->requests;
+        return json_encode([
+            'label' => $label,
+            'message' => (string) $message,
+            'request' => [
+                'method' => app('request')->method(),
+                'root' => app('request')->root(),
+                'path' => app('request')->path(),
+                'query' => app('request')->query(),
+                'headers' => app('request')->headers(),
+                'content' => app('request')->getContent(),
+                'request' => app('request')->all()
+            ]
+        ]);
     }
 
     protected function request($level, $label, $message)
     {
-        $this->requests[] = function () use ($level, $label, $message) {
-            return $this->client->post($level, ['json' => [
-                'label' => $label,
-                'message' => (string) $message,
-                'request' => [
-                    'method' => app('request')->method(),
-                    'root' => app('request')->root(),
-                    'path' => app('request')->path(),
-                    'query' => app('request')->query(),
-                    'headers' => app('request')->headers(),
-                    'content' => app('request')->getContent(),
-                    'request' => app('request')->all(),
-                ],
-            ]]);
-        };
+        Log::$level($this->getDebug($label, $message));
 
         return $this;
     }
