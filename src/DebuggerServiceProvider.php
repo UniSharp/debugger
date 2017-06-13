@@ -16,9 +16,7 @@ class DebuggerServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('unisharp.debugger', function () {
-            return new Debugger(new Client([
-                'base_uri' => env('DEBUG_API_URI')
-            ]));
+            return new Debugger();
         });
     }
 }
